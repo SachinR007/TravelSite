@@ -147,32 +147,12 @@ jobs:
         with:
           node-version: '20'
       - run: |
-          npm ci || npm install
-      - run: |
           npm run build --if-present
-
-  # Suggested from AI: Code Linting
-  lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    needs: [install]
-    continue-on-error: true
-    env:
-      PIPELINEIQ_STAGE_SOURCE: ai-suggested
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: |
-          npm ci || npm install
-      - run: |
-          eslint js/ || true
 
   quality-gate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs: [test, sast, filesystem-scan, secrets-scan, dep-audit, build, lint]
+    needs: [test, sast, filesystem-scan, secrets-scan, dep-audit, build]
     if: always()
     steps:
       - uses: actions/checkout@v4
