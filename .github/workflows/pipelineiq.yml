@@ -34,9 +34,12 @@ env:
 
 jobs:
 
+  # Suggested from AI: Install Dependencies
   install:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    env:
+      PIPELINEIQ_STAGE_SOURCE: ai-suggested
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -45,10 +48,13 @@ jobs:
       - run: |
           npm ci || npm install
 
+  # Suggested from AI: Unit & Integration Tests
   test:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     needs: [install]
+    env:
+      PIPELINEIQ_STAGE_SOURCE: ai-suggested
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -112,11 +118,14 @@ jobs:
         with:
           path: ./
 
+  # Suggested from AI: Dependency Vulnerability Audit
   dep-audit:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [install]
     continue-on-error: true
+    env:
+      PIPELINEIQ_STAGE_SOURCE: ai-suggested
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -127,10 +136,13 @@ jobs:
       - run: |
           npm audit --audit-level=high || true
 
+  # Suggested from AI: Build Application
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     needs: [install]
+    env:
+      PIPELINEIQ_STAGE_SOURCE: ai-suggested
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -147,11 +159,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          echo "Repository: SachinR007/TravelSite"
+          echo "PipelineIQ quality gate evaluating required jobs"
       - run: |
-          echo "Test result: ${{ needs.test.result }}"
+          echo "test result: ${{ needs.test.result }}"
       - run: |
           test "${{ needs.test.result }}" = "success"
+      - run: |
+          echo "build result: ${{ needs.build.result }}"
       - run: |
           test "${{ needs.build.result }}" = "success"
 
